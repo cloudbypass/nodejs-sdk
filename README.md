@@ -16,9 +16,9 @@
 
 使用`getBalance`方法可以查询当前账户余额。
 
-[![npm version](https://img.shields.io/npm/v/cloudbypass.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass)
-[![CDNJS](https://img.shields.io/cdnjs/v/cloudbypass.svg?style=flat-square)](https://cdnjs.com/libraries/cloudbypass)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass?style=flat-square)](https://bundlephobia.com/package/cloudbypass@latest)
+[![npm version](https://img.shields.io/npm/v/cloudbypass-sdk.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass-sdk)
+[![CDNJS](https://img.shields.io/cdnjs/v/cloudbypass-sdk.svg?style=flat-square)](https://cdnjs.com/libraries/cloudbypass-sdk)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass-sdk?style=flat-square)](https://bundlephobia.com/package/cloudbypass-sdk@latest)
 
 ### 安装
 
@@ -27,19 +27,19 @@
 Using npm:
 
 ```shell
-$ npm install cloudbypass
+$ npm install cloudbypass-sdk
 ```
 
 Using yarn:
 
 ```shell
-$ yarn add cloudbypass
+$ yarn add cloudbypass-sdk
 ```
 
 Using pnpm:
 
 ```shell
-$ pnpm add cloudbypass
+$ pnpm add cloudbypass-sdk
 ```
 
 ### 使用
@@ -48,19 +48,19 @@ $ pnpm add cloudbypass
 
 ```js
 // Using Node.js `require()`
-const cloudbypass = require('cloudbypass');
+const cloudbypass = require('cloudbypass-sdk');
 ```
 
 或者，如果您使用的是ES模块：
 
 ```js
 // Using ES6 imports
-import cloudbypass from 'cloudbypass';
+import cloudbypass from 'cloudbypass-sdk';
 ```
 
 ### 发起请求
 
-引入`cloudbypass`后，您可以将其当作`axios`使用。
+引入`cloudbypass-sdk`后，您可以将其当作`axios`使用。
 
 `config`参数支持所有`axios`的请求配置，并支持一下配置：
 
@@ -72,9 +72,9 @@ import cloudbypass from 'cloudbypass';
 > 以上参数可使用环境变量`CB_APIKEY`、`CB_PROXY`和`CB_APIHOST`进行配置。
 
 ```js
-import cloudbypass from 'cloudbypass';
+import cloudbypass from 'cloudbypass-sdk';
 // Using Node.js `require()`
-// const cloudbypass = require('cloudbypass'); 
+// const cloudbypass = require('cloudbypass-sdk'); 
 
 cloudbypass.get('https://opensea.io/category/memberships', {
     cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
@@ -114,9 +114,9 @@ cloudbypass.get('https://etherscan.io/accounts/label/lido', {
 ### 查询余额
 
 ```js
-import cloudbypass from 'cloudbypass';
+import cloudbypass from 'cloudbypass-sdk';
 // Using Node.js `require()`
-// const cloudbypass = require('cloudbypass');
+// const cloudbypass = require('cloudbypass-sdk');
 
 cloudbypass.getBalance(/* APIKEY */).then(balance => {
     console.log(balance);
