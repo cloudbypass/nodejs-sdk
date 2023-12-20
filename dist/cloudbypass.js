@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.1-alpha.3 Copyright (c) 2023 NULL and contributors
+// Cloudbypass v0.0.1-alpha.4 Copyright (c) 2023 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('url')) :
   typeof define === 'function' && define.amd ? define(['url'], factory) :
@@ -3562,7 +3562,7 @@
     _axios.interceptors.response.use(function (response) {
       return response;
     }, function (error) {
-      if (error !== null && error !== void 0 && error.AxiosError && error.response && error.response.data) {
+      if (error.name === "AxiosError" && error.response && error.response.data) {
         throw new BypassError(error);
       }
       return Promise.reject(error);

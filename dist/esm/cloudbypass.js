@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.1-alpha.3 Copyright (c) 2023 NULL and contributors
+// Cloudbypass v0.0.1-alpha.4 Copyright (c) 2023 NULL and contributors
 import url from 'url';
 
 function bind(fn, thisArg) {
@@ -3354,7 +3354,7 @@ const cloudbypassInterceptorHelper = (_axios) => {
     _axios.interceptors.response.use(response => {
         return response;
     }, error => {
-        if (error?.AxiosError && error.response && error.response.data) {
+        if (error.name === "AxiosError" && error.response && error.response.data) {
             throw new BypassError(error);
         }
         return Promise.reject(error);
