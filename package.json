@@ -1,0 +1,109 @@
+{
+  "name": "cloudbypass",
+  "version": "0.0.1",
+  "description": "Cloudbypass Nodejs SDK.",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "types": {
+        "require": "./index.d.cts",
+        "default": "./index.d.ts"
+      },
+      "browser": {
+        "require": "./dist/browser/cloudbypass.cjs",
+        "default": "./index.js"
+      },
+      "default": {
+        "require": "./dist/node/cloudbypass.cjs",
+        "default": "./index.js"
+      }
+    },
+    "./unsafe/utils.js": "./lib/utils.js",
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "npm run test:eslint && npm run test:mocha && npm run test:karma && npm run test:dtslint && npm run test:exports",
+    "test:eslint": "node ./bin/eslint.js",
+    "preversion": "gulp version",
+    "version": "npm run build && git add dist && git add package.json",
+    "postpublish": "git push && git push --tags",
+    "build": "gulp clear && cross-env NODE_ENV=production rollup -c -m",
+    "coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "fix": "eslint --fix lib/**/*.js",
+    "prepare": "husky install && npm run prepare:hooks",
+    "prepare:hooks": "npx husky set .husky/commit-msg \"npx commitlint --edit $1\"",
+    "release:dry": "release-it --dry-run --no-npm",
+    "release:info": "release-it --release-version",
+    "release:beta:no-npm": "release-it --preRelease=beta --no-npm",
+    "release:beta": "release-it --preRelease=beta",
+    "release:no-npm": "release-it --no-npm",
+    "release:changelog:fix": "node ./bin/injectContributorsList.js && git add CHANGELOG.md",
+    "release": "release-it"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloudbypass/nodejs-sdk"
+  },
+  "jsdelivr": "dist/cloudbypass.min.js",
+  "unpkg": "dist/cloudbypass.min.js",
+  "typings": "./index.d.ts",
+  "author": "NULL",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "@release-it/conventional-changelog": "^5.1.1",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-multi-entry": "^4.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "gulp": "^4.0.2",
+    "cross-env": "^7.0.3",
+    "fs-extra": "^10.1.0",
+    "minimist": "^1.2.7",
+    "husky": "^8.0.2",
+    "rollup": "^2.67.0",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "release-it": "^15.5.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore(release): v${version}",
+      "push": true,
+      "commit": true,
+      "tag": true,
+      "requireCommits": false,
+      "requireCleanWorkingDir": false
+    },
+    "github": {
+      "release": true,
+      "draft": true
+    },
+    "npm": {
+      "publish": false,
+      "ignoreVersion": false
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md",
+        "header": "# Changelog"
+      }
+    },
+    "hooks": {
+      "after:bump": "gulp version --bump ${version} && npm run build && git add ./dist && git add ./package-lock.json",
+      "before:release": "npm run release:changelog:fix",
+      "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+    }
+  }
+}

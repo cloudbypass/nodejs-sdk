@@ -1,0 +1,24 @@
+{
+  "name": "cloudbypass",
+  "main": "./dist/cloudbypass.js",
+  "version": "0.0.1",
+  "authors": [
+    "NULL"
+  ],
+  "description": "Cloudbypass Nodejs SDK.",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "lib",
+    "node_modules",
+    "test",
+    "Gruntfile.js",
+    "index.js",
+    "package.json",
+    "webpack.*.js"
+  ]
+}
