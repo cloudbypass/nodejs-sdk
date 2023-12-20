@@ -1,6 +1,6 @@
 {
   "name": "cloudbypass",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "Cloudbypass Nodejs SDK.",
   "main": "index.js",
   "exports": {
