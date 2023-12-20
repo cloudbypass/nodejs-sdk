@@ -5,10 +5,6 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "types": {
-        "require": "./index.d.cts",
-        "default": "./index.d.ts"
-      },
       "browser": {
         "require": "./dist/browser/cloudbypass.cjs",
         "default": "./index.js"

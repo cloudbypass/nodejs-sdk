@@ -98,8 +98,10 @@ export function isBypassError<T = any, D = any>(payload: any): payload is Bypass
 
 export interface CloudbypassStatic extends CloudbypassInstance {
     isBypassError: typeof isBypassError;
+    BypassError: typeof BypassError;
+    create(config?: CloudbypassRequestConfig): CloudbypassInstance;
 }
 
-declare const cloudbypass: Cloudbypass;
+declare const cloudbypass: CloudbypassStatic;
 
 export default cloudbypass;
