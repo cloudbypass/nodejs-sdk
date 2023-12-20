@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.1-alpha.1 Copyright (c) 2023 NULL and contributors
+// Cloudbypass v0.0.1-alpha.2 Copyright (c) 2023 NULL and contributors
 'use strict';
 
 const axios = require('axios');
