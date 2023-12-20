@@ -10,6 +10,18 @@
     "amd",
     "globals"
   ],
+  "keywords": [
+    "cloudflare",
+    "bypass",
+    "turnstile",
+    "scraping",
+    "cloudbypass",
+    "scrapingbypass",
+    "waf",
+    "captcha",
+    "cloudflare-bypass",
+    "cloudflare-scraping"
+  ],
   "license": "MIT",
   "ignore": [
     "**/.*",

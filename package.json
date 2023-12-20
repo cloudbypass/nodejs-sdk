@@ -42,6 +42,18 @@
     "type": "git",
     "url": "https://github.com/cloudbypass/nodejs-sdk"
   },
+  "keywords": [
+    "cloudflare",
+    "bypass",
+    "turnstile",
+    "scraping",
+    "cloudbypass",
+    "scrapingbypass",
+    "waf",
+    "captcha",
+    "cloudflare-bypass",
+    "cloudflare-scraping"
+  ],
   "jsdelivr": "dist/cloudbypass.min.js",
   "unpkg": "dist/cloudbypass.min.js",
   "typings": "./index.d.ts",
