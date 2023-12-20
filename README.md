@@ -17,7 +17,7 @@
 使用`getBalance`方法可以查询当前账户余额。
 
 [![npm version](https://img.shields.io/npm/v/cloudbypass-sdk.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass-sdk)
-[![CDNJS](https://img.shields.io/cdnjs/v/cloudbypass-sdk.svg?style=flat-square)](https://cdnjs.com/libraries/cloudbypass-sdk)
+[![install size](https://img.shields.io/badge/dynamic/json?url=https://packagephobia.com/v2/api.json?p=cloudbypass-sdk&query=$.install.pretty&label=install%20size&style=flat-square)](https://packagephobia.now.sh/result?p=cloudbypass-sdk)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass-sdk?style=flat-square)](https://bundlephobia.com/package/cloudbypass-sdk@latest)
 
 ### 安装
