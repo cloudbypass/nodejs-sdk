@@ -93,7 +93,7 @@
     },
     "plugins": {},
     "hooks": {
-      "after:bump": "gulp version --bump ${version} && npm run build && git add ./dist",
+      "after:bump": "gulp version --bump ${version} && npm run build && git add ./dist && git add ./package-lock.json",
       "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
     }
   },
