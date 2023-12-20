@@ -1,6 +1,6 @@
 {
   "name": "cloudbypass",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
   "description": "Cloudbypass Nodejs SDK.",
   "main": "index.js",
   "exports": {
@@ -39,7 +39,6 @@
     "release:beta:no-npm": "release-it --preRelease=beta --no-npm",
     "release:beta": "release-it --preRelease=beta",
     "release:no-npm": "release-it --no-npm",
-    "release:changelog:fix": "node ./bin/injectContributorsList.js && git add CHANGELOG.md",
     "release": "release-it"
   },
   "repository": {
@@ -56,7 +55,6 @@
     "@babel/preset-env": "^7.18.2",
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
-    "@release-it/conventional-changelog": "^5.1.1",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -93,16 +91,9 @@
       "publish": false,
       "ignoreVersion": false
     },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular",
-        "infile": "CHANGELOG.md",
-        "header": "# Changelog"
-      }
-    },
+    "plugins": {},
     "hooks": {
-      "after:bump": "gulp version --bump ${version} && npm run build && git add ./dist && git add ./package-lock.json",
-      "before:release": "npm run release:changelog:fix",
+      "after:bump": "gulp version --bump ${version} && npm run build && git add ./dist",
       "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
     }
   }

@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.1 Copyright (c) 2023 NULL and contributors
+// Cloudbypass v0.0.1-alpha.1 Copyright (c) 2023 NULL and contributors
 import url from 'url';
 
 function bind(fn, thisArg) {
