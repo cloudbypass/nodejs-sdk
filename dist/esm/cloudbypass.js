@@ -3385,7 +3385,8 @@ cloudbypass.default = cloudbypass;
 const {
     getBalance,
     isBypassError,
+    create
 } = cloudbypass;
 
-export { cloudbypass as default, getBalance, isBypassError };
+export { create, cloudbypass as default, getBalance, isBypassError };
 //# sourceMappingURL=cloudbypass.js.map

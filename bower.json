@@ -1,5 +1,5 @@
 {
-  "name": "cloudbypass",
+  "name": "cloudbypass-sdk",
   "main": "./dist/cloudbypass.js",
   "version": "0.0.1-alpha.1",
   "authors": [
