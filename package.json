@@ -1,6 +1,6 @@
 {
   "name": "cloudbypass",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.0",
   "description": "Cloudbypass Nodejs SDK.",
   "main": "index.js",
   "exports": {
@@ -96,5 +96,17 @@
       "after:bump": "gulp version --bump ${version} && npm run build && git add ./dist",
       "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
     }
+  },
+  "commitlint": {
+    "rules": {
+      "header-max-length": [
+        2,
+        "always",
+        130
+      ]
+    },
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }
