@@ -1,7 +1,9 @@
-// Cloudbypass v0.0.1-alpha.4 Copyright (c) 2023 NULL and contributors
+// Cloudbypass v0.0.1-alpha.5 Copyright (c) 2023 NULL and contributors
 'use strict';
 
 const axios = require('axios');
+const axiosCookiejarSupport = require('axios-cookiejar-support');
+const toughCookie = require('tough-cookie');
 const url = require('url');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -108,7 +110,9 @@ const getBalance = async (apikey) => {
 const ENV_APIKEY = getEnv("CB_APIKEY", "");
 const ENV_PROXY = getEnv("CB_PROXY", "");
 
-const cloudbypass = axios__default["default"].create({});
+const cloudbypass = axiosCookiejarSupport.wrapper(axios__default["default"].create({
+    jar: new toughCookie.CookieJar(),
+}));
 const cloudbypassInterceptorHelper = (_axios) => {
     _axios.interceptors.request.use(config => {
         const u = url__default["default"].parse(config.url);
@@ -140,7 +144,11 @@ const cloudbypassInterceptorHelper = (_axios) => {
 };
 
 cloudbypass.create = function (options) {
-    return cloudbypassInterceptorHelper(axios__default["default"].create(options));
+    options = options || {};
+    options.jar = options.jar || new toughCookie.CookieJar();
+    return cloudbypassInterceptorHelper(
+        axiosCookiejarSupport.wrapper(axios__default["default"].create(options))
+    );
 };
 
 cloudbypassInterceptorHelper(cloudbypass);

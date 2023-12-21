@@ -1,6 +1,6 @@
 {
   "name": "cloudbypass-sdk",
-  "version": "0.0.1-alpha.4",
+  "version": "0.0.1-alpha.5",
   "description": "Cloudbypass Nodejs SDK.",
   "main": "index.js",
   "exports": {
@@ -72,7 +72,7 @@
     "@types/tough-cookie": "^4.0.5",
     "cross-env": "^7.0.3",
     "fs-extra": "^10.1.0",
-    "gulp": "^3.9.1",
+    "gulp": "4.0.2",
     "husky": "^8.0.2",
     "minimist": "^1.2.7",
     "release-it": "15.5.1",
