@@ -12,7 +12,7 @@
 
 > Cloudbypass Nodejs SDK 依赖于 [Axios](https://axios-http.com/)。
 
-保留axios的所有请求配置，并支持**⚠跨域请求**。
+保留axios的所有请求配置，并支持**⚠跨域请求**和Cookie管理。
 
 使用`getBalance`方法可以查询当前账户余额。
 

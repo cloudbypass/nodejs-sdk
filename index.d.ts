@@ -4,6 +4,8 @@ import axios, {
     AxiosRequestConfig, AxiosRequestHeaders,
     AxiosResponse, HeadersDefaults
 } from "axios";
+import type { CookieJar } from 'tough-cookie';
+
 
 export interface CloudbypassRequestConfig<D = any> extends AxiosRequestConfig {
     cb_apikey?: string;
@@ -11,6 +13,7 @@ export interface CloudbypassRequestConfig<D = any> extends AxiosRequestConfig {
     cb_part?: number;
     cb_apihost?: string;
     cb_options?: any;
+    jar?: CookieJar;
 }
 
 export interface InternalCloudbypassRequestConfig<D = any> extends CloudbypassRequestConfig {
@@ -99,6 +102,7 @@ export function isBypassError<T = any, D = any>(payload: any): payload is Bypass
 export interface CloudbypassStatic extends CloudbypassInstance {
     isBypassError: typeof isBypassError;
     BypassError: typeof BypassError;
+
     create(config?: CloudbypassRequestConfig): CloudbypassInstance;
 }
 
