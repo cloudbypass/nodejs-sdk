@@ -59,9 +59,9 @@ export class CloudbypassProxy {
 
     copy(): CloudbypassProxy;
 
-    limit(count: string): IterableIterator<string>;
+    limit(count: string, format_str?: string): IterableIterator<string>;
 
-    loop(count: string): IterableIterator<string>;
+    loop(count: string, format_str?: string): IterableIterator<string>;
 
     toString(): string;
 }
