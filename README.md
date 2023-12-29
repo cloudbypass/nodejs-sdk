@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://cloudbypass.com/" target="_blank" rel="noopener noreferrer" >
     <div align="center">
-        <img src="https://github.com/cloudbypass/example/blob/main/assets/img.png?raw=true" alt="Cloudbypass" height="50">
+        <img src="https://raw.githubusercontent.com/cloudbypass/example/main/assets/img.png" alt="Cloudbypass" height="50">
     </div>
   </a>
 </p>
@@ -123,6 +123,49 @@ cloudbypass.getBalance(/* APIKEY */).then(balance => {
 }).catch(err => {
     console.log(err);
 })
+```
+
+### 提取代理
+
+通过`cloudbypass.createProxy(auth: string)`方法可以创建一个`CloudbypassProxy`实例。
+
++ `copy()` 复制代理实例，使原有代理实例不受影响。
++ `setDynamic()` 设置为动态代理。
++ `setExpire(expire: number)` 设置为时效代理，参数为IP过期时间，单位为秒。
++ `setRegion(region: string)` 设置代理IP地区。
++ `clearRegion()` 清除代理的地区。
++ `toString()` 返回代理IP字符串。
++ `format(format_str?: string)` 格式化代理IP，参数为格式化字符串，例如：`username:password@gateway`。
++ `limit(count: number, format_str?: string)` 返回一个代理IP字符串迭代器，参数为提取数量及代理格式化字符串。
++ `loop(count: number, format_str?: string)` 返回一个代理IP字符串循环迭代器，参数为实际数量及代理格式化字符串。
+
+```js
+import cloudbypass from 'cloudbypass-sdk';
+
+const proxy = cloudbypass.createProxy("username-res:password");
+
+// 提取动态代理
+console.log("Extract dynamic proxy: ")
+console.log(proxy.setDynamic().toString())
+console.log(proxy.setRegion("US").toString())
+
+// 提取时效代理并指定地区
+console.log("Extract proxy with expire and region: ")
+console.log(proxy.copy().setExpire(60 * 30).setRegion("US").toString())
+
+// 批量提取
+console.log("Extract five 10-minute aging proxies: ")
+const pool = proxy.copy().setExpire(60 * 10).limit(5);
+for (let p of pool) {
+    console.log(p)
+}
+
+// 循环提取
+console.log("Loop two 10-minute aging proxies: ")
+const loop = proxy.copy().setExpire(60 * 10).loop(2);
+for (let i = 0; i < 10; i++) {
+    console.log(loop.next().value)
+}
 ```
 
 ### 关于重定向问题

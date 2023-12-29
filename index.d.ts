@@ -4,7 +4,7 @@ import axios, {
     AxiosRequestConfig, AxiosRequestHeaders,
     AxiosResponse, HeadersDefaults
 } from "axios";
-import type { CookieJar } from 'tough-cookie';
+import type {CookieJar} from 'tough-cookie';
 
 
 export interface CloudbypassRequestConfig<D = any> extends AxiosRequestConfig {
@@ -28,6 +28,43 @@ export interface CloudbypassInterceptorManager<V> extends AxiosInterceptorManage
     clear(): void;
 }
 
+export class CloudbypassProxy {
+    readonly username: string;
+    readonly password: string;
+    readonly region: string;
+    readonly expire: number;
+    readonly gateway: string;
+    readonly sessionId: string;
+
+    constructor(auth: string);
+
+    static checkAuth(auth: string): {
+        username: string;
+        password: string;
+    };
+
+    setExpire(expire: number): CloudbypassProxy;
+
+    setDynamic(): CloudbypassProxy;
+
+    setGateway(gateway: string): CloudbypassProxy;
+
+    setRegion(region: string): CloudbypassProxy;
+
+    clearRegion(): CloudbypassProxy;
+
+    parseOptions(): CloudbypassProxy;
+
+    format(format_str?: string): string;
+
+    copy(): CloudbypassProxy;
+
+    limit(count: string): IterableIterator<string>;
+
+    loop(count: string): IterableIterator<string>;
+
+    toString(): string;
+}
 
 export class Cloudbypass {
     defaults: AxiosDefaults;
@@ -102,6 +139,8 @@ export function isBypassError<T = any, D = any>(payload: any): payload is Bypass
 export interface CloudbypassStatic extends CloudbypassInstance {
     isBypassError: typeof isBypassError;
     BypassError: typeof BypassError;
+
+    createProxy(auth: string): CloudbypassProxy;
 
     create(config?: CloudbypassRequestConfig): CloudbypassInstance;
 }
