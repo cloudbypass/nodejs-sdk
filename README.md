@@ -127,7 +127,7 @@ cloudbypass.getBalance(/* APIKEY */).then(balance => {
 
 ### 提取代理
 
-通过`cloudbypass.createProxy(auth: string)`方法可以创建一个`CloudbypassProxy`实例。
+通过`cloudbypass.createProxy(auth: string)`方法可以创建一个`CloudbypassProxy`实例，该实例可提取穿云动态代理IP和时效代理IP。
 
 + `copy()` 复制代理实例，使原有代理实例不受影响。
 + `setDynamic()` 设置为动态代理。
