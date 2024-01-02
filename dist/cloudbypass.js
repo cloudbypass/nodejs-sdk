@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.1 Copyright (c) 2023 NULL and contributors
+// Cloudbypass v0.0.2 Copyright (c) 2024 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util'), require('url')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util', 'url'], factory) :
@@ -16597,6 +16597,204 @@
     };
   }();
 
+  var CloudbypassProxy = /*#__PURE__*/function () {
+    function CloudbypassProxy(auth) {
+      var kwargs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      _classCallCheck(this, CloudbypassProxy);
+      var _CloudbypassProxy$che = CloudbypassProxy.checkAuth(auth),
+        username = _CloudbypassProxy$che.username,
+        password = _CloudbypassProxy$che.password;
+      this.username = username;
+      this.password = password;
+      this.region = kwargs.region || null;
+      this.expire = kwargs.expire || null;
+      this.gateway = kwargs.gateway || 'gw.cloudbypass.com:1288';
+      this.__sessionId = null;
+    }
+    _createClass(CloudbypassProxy, [{
+      key: "setExpire",
+      value: function setExpire(expire) {
+        this.expire = expire;
+        this.__sessionId = null;
+        return this;
+      }
+    }, {
+      key: "setDynamic",
+      value: function setDynamic() {
+        return this.setExpire(0);
+      }
+    }, {
+      key: "setGateway",
+      value: function setGateway(gateway) {
+        this.gateway = gateway;
+        this.__sessionId = null;
+        return this;
+      }
+    }, {
+      key: "setRegion",
+      value: function setRegion(region) {
+        this.region = region;
+        this.__sessionId = null;
+        return this;
+      }
+    }, {
+      key: "clearRegion",
+      value: function clearRegion() {
+        this.region = null;
+        this.__sessionId = null;
+        return this;
+      }
+    }, {
+      key: "sessionId",
+      get: function get() {
+        if (!this.__sessionId) {
+          // 0123456789abcdefghijklmnopqrstuvwxyz 随机11位
+          this.__sessionId = Math.random().toString(36).substr(2);
+        }
+        return this.__sessionId;
+      }
+    }, {
+      key: "parseOptions",
+      value: function parseOptions() {
+        var options = [this.username];
+        if (this.region) {
+          options.push(this.region.replace(/\s+/g, '+'));
+        }
+        var expire = this.expire;
+        if (expire) {
+          for (var _i = 0, _arr = [[60, "s"], [60, "m"], [24, "h"], [999, "d"]]; _i < _arr.length; _i++) {
+            var val = _arr[_i];
+            var _val = _slicedToArray(val, 2),
+              time = _val[0],
+              unit = _val[1];
+            if (expire < time || expire % time) {
+              options.push("".concat(this.sessionId, "-").concat(expire).concat(unit));
+              break;
+            }
+            expire /= time;
+          }
+        }
+        return options.join('_');
+      }
+    }, {
+      key: "format",
+      value: function format(format_str) {
+        return (format_str || 'username:password@gateway').replace('username', this.parseOptions()).replace('password', this.password).replace('gateway', this.gateway);
+      }
+    }, {
+      key: "toString",
+      value: function toString() {
+        return this.format();
+      }
+    }, {
+      key: "copy",
+      value: function copy() {
+        return new CloudbypassProxy("".concat(this.username, ":").concat(this.password), {
+          region: this.region,
+          expire: this.expire,
+          gateway: this.gateway
+        });
+      }
+    }, {
+      key: "limit",
+      value: /*#__PURE__*/_regeneratorRuntime().mark(function limit(count, format_str) {
+        var i;
+        return _regeneratorRuntime().wrap(function limit$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              if (!(count <= 0)) {
+                _context.next = 2;
+                break;
+              }
+              throw new Error('Count must be greater than 0');
+            case 2:
+              i = 0;
+            case 3:
+              if (!(i < count)) {
+                _context.next = 10;
+                break;
+              }
+              this.__sessionId = null;
+              _context.next = 7;
+              return this.format(format_str);
+            case 7:
+              i++;
+              _context.next = 3;
+              break;
+            case 10:
+            case "end":
+              return _context.stop();
+          }
+        }, limit, this);
+      })
+    }, {
+      key: "loop",
+      value: /*#__PURE__*/_regeneratorRuntime().mark(function loop(count, format_str) {
+        var pool, i, proxy, _i2;
+        return _regeneratorRuntime().wrap(function loop$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!(count <= 0)) {
+                _context2.next = 2;
+                break;
+              }
+              throw new Error('Count must be greater than 0');
+            case 2:
+              pool = [];
+              i = 0;
+            case 4:
+              if (!(i < count)) {
+                _context2.next = 13;
+                break;
+              }
+              this.__sessionId = null;
+              proxy = this.format(format_str);
+              pool.push(proxy);
+              _context2.next = 10;
+              return proxy;
+            case 10:
+              i++;
+              _context2.next = 4;
+              break;
+            case 13:
+              _i2 = 0;
+            case 15:
+              if (!(_i2 < count)) {
+                _context2.next = 21;
+                break;
+              }
+              _context2.next = 18;
+              return pool[_i2];
+            case 18:
+              _i2++;
+              _context2.next = 15;
+              break;
+            case 21:
+              _context2.next = 13;
+              break;
+            case 23:
+            case "end":
+              return _context2.stop();
+          }
+        }, loop, this);
+      })
+    }], [{
+      key: "checkAuth",
+      value: function checkAuth(auth) {
+        // ^(\w+-(res|dat)):(\w+)$
+        var content = /^(\w+-(res|dat)):(\w+)$/.exec(auth);
+        if (!content) {
+          throw new Error('Invalid auth format');
+        }
+        return {
+          username: content[1],
+          password: content[3]
+        };
+      }
+    }]);
+    return CloudbypassProxy;
+  }();
+
   var ENV_APIKEY = getEnv("CB_APIKEY", "");
   var ENV_PROXY = getEnv("CB_PROXY", "");
   var cloudbypass = noop_1.wrapper(axios$1.create({
@@ -16646,6 +16844,10 @@
   });
   cloudbypass.isBypassError = isBypassError;
   cloudbypass.getBalance = getBalance;
+  cloudbypass.BypassError = BypassError;
+  cloudbypass.createProxy = function (auth) {
+    return new CloudbypassProxy(auth);
+  };
   cloudbypass["default"] = cloudbypass;
 
   return cloudbypass;
