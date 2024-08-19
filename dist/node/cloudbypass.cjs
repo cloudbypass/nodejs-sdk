@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.3 Copyright (c) 2024 NULL and contributors
+// Cloudbypass v0.0.4 Copyright (c) 2024 NULL and contributors
 'use strict';
 
 const axios = require('axios');
@@ -262,6 +262,7 @@ const cloudbypassInterceptorHelper = (_axios) => {
         }
         if (config.cb_part) {
             config.headers["x-cb-part"] = config.cb_part;
+            config.headers["x-cb-version"] = "2";
         }
         config.url = getApiHost(config.cb_apihost) + u.path;
         return config;
