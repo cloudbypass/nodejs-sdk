@@ -14,8 +14,6 @@
 
 保留axios的所有请求配置，并支持**⚠跨域请求**和Cookie管理。
 
-使用`getBalance`方法可以查询当前账户余额。
-
 [![npm version](https://img.shields.io/npm/v/cloudbypass-sdk.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass-sdk)
 [![install size](https://img.shields.io/badge/dynamic/json?url=https://packagephobia.com/v2/api.json?p=cloudbypass-sdk&query=$.install.pretty&label=install%20size&style=flat-square)](https://packagephobia.now.sh/result?p=cloudbypass-sdk)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass-sdk?style=flat-square)](https://bundlephobia.com/package/cloudbypass-sdk@latest)
@@ -112,6 +110,8 @@ cloudbypass.get('https://etherscan.io/accounts/label/lido', {
 ```
 
 ### 查询余额
+
+使用`getBalance`方法可以查询当前账户余额。
 
 ```js
 import cloudbypass from 'cloudbypass-sdk';
