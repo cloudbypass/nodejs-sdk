@@ -60,7 +60,7 @@ import cloudbypass from 'cloudbypass-sdk';
 
 引入`cloudbypass-sdk`后，您可以将其当作`axios`使用。
 
-`config`参数支持所有`axios`的请求配置，并支持一下配置：
+`config`参数支持所有`axios`的请求配置，并支持以下配置：
 
 - `cb_apikey` API密钥;
 - `cb_part` 使用V2时设置part参数即可;
