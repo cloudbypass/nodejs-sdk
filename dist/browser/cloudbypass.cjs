@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.4 Copyright (c) 2024 NULL and contributors
+// Cloudbypass v0.0.5 Copyright (c) 2024 NULL and contributors
 'use strict';
 
 var Punycode = require('punycode');
@@ -17110,7 +17110,7 @@ class CloudbypassProxy {
             for (let val of [[60, "s"], [60, "m"], [24, "h"], [999, "d"]]) {
                 const [time, unit] = val;
                 if (expire < time || expire % time) {
-                    options.push(`${this.sessionId}-${expire}${unit}`);
+                    options.push(`s${this.sessionId}-${expire}${unit}`);
                     break;
                 }
                 expire /= time;

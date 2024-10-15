@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.4 Copyright (c) 2024 NULL and contributors
+// Cloudbypass v0.0.5 Copyright (c) 2024 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util'), require('url')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util', 'url'], factory) :
@@ -17404,7 +17404,7 @@
               time = _val[0],
               unit = _val[1];
             if (expire < time || expire % time) {
-              options.push("".concat(this.sessionId, "-").concat(expire).concat(unit));
+              options.push("s".concat(this.sessionId, "-").concat(expire).concat(unit));
               break;
             }
             expire /= time;
