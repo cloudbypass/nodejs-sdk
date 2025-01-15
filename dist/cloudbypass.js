@@ -1,4 +1,4 @@
-// Cloudbypass v0.0.5 Copyright (c) 2024 NULL and contributors
+// Cloudbypass v0.1.0-0 Copyright (c) 2025 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util'), require('url')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util', 'url'], factory) :
@@ -17550,6 +17550,9 @@
       }
       if (config.cb_part) {
         config.headers["x-cb-part"] = config.cb_part;
+        config.headers["x-cb-version"] = "2";
+      }
+      if (config.cb_use_v2) {
         config.headers["x-cb-version"] = "2";
       }
       config.url = getApiHost(config.cb_apihost) + u.path;

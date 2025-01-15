@@ -10,6 +10,7 @@ import type {CookieJar} from 'tough-cookie';
 export interface CloudbypassRequestConfig<D = any> extends AxiosRequestConfig {
     cb_apikey?: string;
     cb_proxy?: string;
+    cb_use_v2?: boolean;
     cb_part?: number;
     cb_apihost?: string;
     cb_options?: any;

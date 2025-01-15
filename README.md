@@ -63,7 +63,8 @@ import cloudbypass from 'cloudbypass-sdk';
 `config`参数支持所有`axios`的请求配置，并支持以下配置：
 
 - `cb_apikey` API密钥;
-- `cb_part` 使用V2时设置part参数即可;
+- `cb_use_v2` 使用V2;
+- `cb_part` 使用V2，并且使用part模式;
 - `cb_proxy` 代理地址，支持http和socks5代理;
 - `cb_apihost` 定制用户可以使用自己的API服务器;
 
@@ -95,18 +96,39 @@ import cloudbypass from 'cloudbypass';
 // Using Node.js `require()`
 // const cloudbypass = require('cloudbypass');
 
-cloudbypass.get('https://etherscan.io/accounts/label/lido', {
-    cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    cb_part: '0',
-    cb_proxy: 'http://proxy:port'
-})
-    .then(function (response) {
-        console.log(response.status, response.headers.get("x-cb-status"));
-        console.log(response.data);
-    })
-    .catch(function (error) {
-        console.log(error.response.data || error.response || error.message);
-    });
+// Cookie模式：服务端返回加密Cookie，下次请求时由客户端发送验证Cookie
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_use_v2: true
+    }));
+    console.log(resp.headers['set-cookie']);
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// Part模式：由服务端管理验证Cookie，客户端只需要控制part参数
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_part: '0'
+    }));
+    console.log(resp.status, resp.headers.get("x-cb-status"));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
 ```
 
 ### 查询余额
