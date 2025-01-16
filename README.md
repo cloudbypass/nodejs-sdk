@@ -63,7 +63,7 @@ import cloudbypass from 'cloudbypass-sdk';
 `config`参数支持所有`axios`的请求配置，并支持以下配置：
 
 - `cb_apikey` API密钥;
-- `cb_use_v2` 使用V2;
+- `cb_use_v2` 使用V2，默认`false`;
 - `cb_part` 使用V2，并且使用part模式;
 - `cb_proxy` 代理地址，支持http和socks5代理;
 - `cb_apihost` 定制用户可以使用自己的API服务器;

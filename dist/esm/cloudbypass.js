@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.0-0 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.0 Copyright (c) 2025 NULL and contributors
 import Punycode from 'punycode';
 import require$$0$1 from 'util';
 import url from 'url';

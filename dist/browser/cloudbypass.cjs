@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.0-0 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.0 Copyright (c) 2025 NULL and contributors
 'use strict';
 
 var Punycode = require('punycode');
