@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.0 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.1 Copyright (c) 2025 NULL and contributors
 'use strict';
 
 const axios = require('axios');
@@ -295,10 +295,17 @@ cloudbypass.create = function (options) {
 cloudbypassInterceptorHelper(cloudbypass);
 
 ["get", "post", "put", "delete", "head", "options", "patch"].forEach(method => {
-    cloudbypass[method] = function (url, config) {
-        return this.request(Object.assign(config || {}, {
-            method: method, url: url || config.url
-        }));
+    cloudbypass[method] = function (url, data, config) {
+        if (method === "get") {
+            config = data;
+            data = undefined;
+        }
+        return this.request({
+            method,
+            url,
+            data,
+            ...config
+        });
     };
 });
 

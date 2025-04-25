@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.0 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.1 Copyright (c) 2025 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util'), require('url')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util', 'url'], factory) :
@@ -17577,11 +17577,16 @@
   };
   cloudbypassInterceptorHelper(cloudbypass);
   ["get", "post", "put", "delete", "head", "options", "patch"].forEach(function (method) {
-    cloudbypass[method] = function (url, config) {
-      return this.request(Object.assign(config || {}, {
+    cloudbypass[method] = function (url, data, config) {
+      if (method === "get") {
+        config = data;
+        data = undefined;
+      }
+      return this.request(_objectSpread2({
         method: method,
-        url: url || config.url
-      }));
+        url: url,
+        data: data
+      }, config));
     };
   });
   cloudbypass.isBypassError = isBypassError;
