@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.1 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.2 Copyright (c) 2025 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util'), require('url')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util', 'url'], factory) :
@@ -17314,13 +17314,18 @@
   }
 
   var getBalance = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(apikey) {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(apikey, email) {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            return _context.abrupt("return", axios$1.get('https://console.cloudbypass.com/api/v1/balance?apikey=' + getEnv("CB_APIKEY", apikey)).then(function (res) {
+            return _context.abrupt("return", axios$1.get('https://console.cloudbypass.com/api/v1/balance', {
+              params: {
+                apikey: getEnv("CB_APIKEY", apikey),
+                email: email
+              }
+            }).then(function (res) {
               var _res$data;
-              return ((_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.balance) || -1;
+              return (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.balance;
             }));
           case 1:
           case "end":
@@ -17328,7 +17333,7 @@
         }
       }, _callee);
     }));
-    return function getBalance(_x) {
+    return function getBalance(_x, _x2) {
       return _ref.apply(this, arguments);
     };
   }();

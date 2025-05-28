@@ -140,7 +140,7 @@ import cloudbypass from 'cloudbypass-sdk';
 // Using Node.js `require()`
 // const cloudbypass = require('cloudbypass-sdk');
 
-cloudbypass.getBalance(/* APIKEY */).then(balance => {
+cloudbypass.getBalance("/* APIKEY */", "/* EMAIL */").then(balance => {
     console.log(balance);
 }).catch(err => {
     console.log(err);

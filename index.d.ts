@@ -92,7 +92,7 @@ export class Cloudbypass {
 
     patch<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: CloudbypassRequestConfig<D>): Promise<R>;
 
-    getBalance(apikey: string): Promise<number>;
+    getBalance(apikey: string, email: string): Promise<number>;
 }
 
 export class BypassError<T = unknown, D = any> extends Error {

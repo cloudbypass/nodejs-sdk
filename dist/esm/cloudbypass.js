@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.1 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.2 Copyright (c) 2025 NULL and contributors
 import Punycode from 'punycode';
 import require$$0$1 from 'util';
 import url from 'url';
@@ -17023,10 +17023,15 @@ function isBypassError$1(payload) {
     return isObject(payload) && (payload.isBypassError === true);
 }
 
-const getBalance$1 = async (apikey) => {
-    return axios$1.get('https://console.cloudbypass.com/api/v1/balance?apikey=' + getEnv("CB_APIKEY", apikey))
+const getBalance$1 = async (apikey, email) => {
+    return axios$1.get('https://console.cloudbypass.com/api/v1/balance', {
+        params: {
+            apikey: getEnv("CB_APIKEY", apikey),
+            email
+        }
+    })
         .then(res => {
-            return res.data?.balance || -1;
+            return res.data?.balance;
         })
 };
 

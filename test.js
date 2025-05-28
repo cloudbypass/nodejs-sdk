@@ -1,7 +1,7 @@
 import cloudbypass, {isBypassError} from "./index.js";
 
 
-try {
+/*try {
     const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
         cb_use_v2: true
     }));
@@ -13,7 +13,9 @@ try {
     } else {
         console.log(e);
     }
-}
+}*/
+
+console.log(await cloudbypass.getBalance("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "example@cloudbypass.cn"))
 
 // const proxy = cloudbypass.createProxy("username-res:password");
 //

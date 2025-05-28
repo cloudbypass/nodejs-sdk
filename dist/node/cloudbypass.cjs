@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.1 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.2 Copyright (c) 2025 NULL and contributors
 'use strict';
 
 const axios = require('axios');
@@ -100,10 +100,15 @@ function isBypassError(payload) {
     return isObject(payload) && (payload.isBypassError === true);
 }
 
-const getBalance = async (apikey) => {
-    return axios__default["default"].get('https://console.cloudbypass.com/api/v1/balance?apikey=' + getEnv("CB_APIKEY", apikey))
+const getBalance = async (apikey, email) => {
+    return axios__default["default"].get('https://console.cloudbypass.com/api/v1/balance', {
+        params: {
+            apikey: getEnv("CB_APIKEY", apikey),
+            email
+        }
+    })
         .then(res => {
-            return res.data?.balance || -1;
+            return res.data?.balance;
         })
 };
 
