@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.3 Copyright (c) 2026 NULL and contributors
+// Cloudbypass v0.1.4 Copyright (c) 2026 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util'], factory) :

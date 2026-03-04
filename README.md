@@ -63,12 +63,13 @@ import cloudbypass from 'cloudbypass-sdk';
 `config`参数支持所有`axios`的请求配置，并支持以下配置：
 
 - `cb_apikey` API密钥;
-- `cb_use_v2` 使用V2，默认`false`;
+- `cb_version` API版本，支持 `'1'`、`'2'`、`'2s'`，默认为 `'1'`;
+- `cb_use_v2` 使用V2（已废弃，建议使用 `cb_version: '2'` 替代）;
 - `cb_part` 使用V2，并且使用part模式;
 - `cb_proxy` 代理地址，支持http和socks5代理;
 - `cb_apihost` 定制用户可以使用自己的API服务器;
 
-> 以上参数可使用环境变量`CB_APIKEY`、`CB_PROXY`和`CB_APIHOST`进行配置。
+> 以上参数可使用环境变量进行配置。环境变量优先级：优先读取 `CLOUDBYPASS_APIKEY` 和 `CLOUDBYPASS_PROXY`，如果为空，再读取 `CB_APIKEY` 和 `CB_PROXY`。`CB_APIHOST` 用于配置API服务器地址。
 
 ```js
 import cloudbypass from 'cloudbypass-sdk';
@@ -92,18 +93,35 @@ cloudbypass.get('https://opensea.io/category/memberships', {
 穿云API V2适用于需要通过JS质询验证的网站。例如访问https://etherscan.io/accounts/label/lido ，请求示例：
 
 ```js
-import cloudbypass from 'cloudbypass';
+import cloudbypass, {isBypassError} from 'cloudbypass-sdk';
 // Using Node.js `require()`
-// const cloudbypass = require('cloudbypass');
+// const cloudbypass = require('cloudbypass-sdk');
 
 // Cookie模式：服务端返回加密Cookie，下次请求时由客户端发送验证Cookie
+// 推荐使用 cb_version: '2'
 try {
     const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
         cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
         cb_proxy: 'http://proxy:port',
-        cb_use_v2: true
+        cb_version: '2'
     }));
     console.log(resp.headers['set-cookie']);
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// 使用 cb_version: '2s' 可以启用更快的V2模式
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_version: '2s'
+    }));
     console.log(resp.data);
 } catch (e) {
     if (isBypassError(e)) {
@@ -121,6 +139,23 @@ try {
         cb_part: '0'
     }));
     console.log(resp.status, resp.headers.get("x-cb-status"));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// 注意：cb_use_v2 已废弃，但仍可使用（向后兼容）
+// 建议使用 cb_version: '2' 替代
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_use_v2: true  // 已废弃，建议使用 cb_version: '2'
+    }));
     console.log(resp.data);
 } catch (e) {
     if (isBypassError(e)) {
