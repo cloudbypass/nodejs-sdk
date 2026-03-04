@@ -1,15 +1,14 @@
-// Cloudbypass v0.1.2 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.3 Copyright (c) 2026 NULL and contributors
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util'), require('url')) :
-  typeof define === 'function' && define.amd ? define(['punycode', 'util', 'url'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.cloudbypass = factory(global.Punycode, global.require$$0$1, global.url));
-})(this, (function (Punycode, require$$0$1, url) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util')) :
+  typeof define === 'function' && define.amd ? define(['punycode', 'util'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.cloudbypass = factory(global.Punycode, global.require$$0$1));
+})(this, (function (Punycode, require$$0$1) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
   var Punycode__default = /*#__PURE__*/_interopDefaultLegacy(Punycode);
   var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0$1);
-  var url__default = /*#__PURE__*/_interopDefaultLegacy(url);
 
   function _OverloadYield(e, d) {
     this.v = e, this.k = d;
@@ -17320,7 +17319,7 @@
           case 0:
             return _context.abrupt("return", axios$1.get('https://console.cloudbypass.com/api/v1/balance', {
               params: {
-                apikey: getEnv("CB_APIKEY", apikey),
+                apikey: getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "") || apikey,
                 email: email
               }
             }).then(function (res) {
@@ -17535,14 +17534,14 @@
     }]);
   }();
 
-  var ENV_APIKEY = getEnv("CB_APIKEY", "");
-  var ENV_PROXY = getEnv("CB_PROXY", "");
+  var ENV_APIKEY = getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "");
+  var ENV_PROXY = getEnv("CLOUDBYPASS_PROXY", "") || getEnv("CB_PROXY", "");
   var cloudbypass = noop_1.wrapper(axios$1.create({
     jar: new CookieJar_1()
   }));
   var cloudbypassInterceptorHelper = function cloudbypassInterceptorHelper(_axios) {
     _axios.interceptors.request.use(function (config) {
-      var u = url__default["default"].parse(config.url);
+      var u = new URL(config.url, 'http://localhost');
       var proxy = config.cb_proxy || ENV_PROXY;
       config.headers = _objectSpread2({
         "x-cb-apikey": config.cb_apikey || ENV_APIKEY,
@@ -17553,14 +17552,19 @@
       if (proxy) {
         config.headers["x-cb-proxy"] = proxy;
       }
-      if (config.cb_part) {
+      // Handle version: cb_version takes priority, then cb_use_v2 (deprecated), then cb_part, default is "1"
+      if (config.cb_version) {
+        config.headers["x-cb-version"] = config.cb_version;
+      } else if (config.cb_use_v2) {
+        // @deprecated: Use cb_version instead
+        config.headers["x-cb-version"] = "2";
+      } else if (config.cb_part) {
         config.headers["x-cb-part"] = config.cb_part;
         config.headers["x-cb-version"] = "2";
+      } else {
+        config.headers["x-cb-version"] = "1";
       }
-      if (config.cb_use_v2) {
-        config.headers["x-cb-version"] = "2";
-      }
-      config.url = getApiHost(config.cb_apihost) + u.path;
+      config.url = getApiHost(config.cb_apihost) + u.pathname + u.search;
       return config;
     }, function (error) {
       return Promise.reject(error);

@@ -1,15 +1,13 @@
-// Cloudbypass v0.1.2 Copyright (c) 2025 NULL and contributors
+// Cloudbypass v0.1.3 Copyright (c) 2026 NULL and contributors
 'use strict';
 
 const axios = require('axios');
 const axiosCookiejarSupport = require('axios-cookiejar-support');
 const toughCookie = require('tough-cookie');
-const url = require('url');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 const axios__default = /*#__PURE__*/_interopDefaultLegacy(axios);
-const url__default = /*#__PURE__*/_interopDefaultLegacy(url);
 
 const getEnv = (key, defaultValue) => {
     try {
@@ -103,7 +101,7 @@ function isBypassError(payload) {
 const getBalance = async (apikey, email) => {
     return axios__default["default"].get('https://console.cloudbypass.com/api/v1/balance', {
         params: {
-            apikey: getEnv("CB_APIKEY", apikey),
+            apikey: getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "") || apikey,
             email
         }
     })
@@ -245,15 +243,15 @@ class CloudbypassProxy {
     }
 }
 
-const ENV_APIKEY = getEnv("CB_APIKEY", "");
-const ENV_PROXY = getEnv("CB_PROXY", "");
+const ENV_APIKEY = getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "");
+const ENV_PROXY = getEnv("CLOUDBYPASS_PROXY", "") || getEnv("CB_PROXY", "");
 
 const cloudbypass = axiosCookiejarSupport.wrapper(axios__default["default"].create({
     jar: new toughCookie.CookieJar(),
 }));
 const cloudbypassInterceptorHelper = (_axios) => {
     _axios.interceptors.request.use(config => {
-        const u = url__default["default"].parse(config.url);
+        const u = new URL(config.url, 'http://localhost');
         const proxy = config.cb_proxy || ENV_PROXY;
         config.headers = {
             "x-cb-apikey": config.cb_apikey || ENV_APIKEY,
@@ -265,14 +263,19 @@ const cloudbypassInterceptorHelper = (_axios) => {
         if (proxy) {
             config.headers["x-cb-proxy"] = proxy;
         }
-        if (config.cb_part) {
+        // Handle version: cb_version takes priority, then cb_use_v2 (deprecated), then cb_part, default is "1"
+        if (config.cb_version) {
+            config.headers["x-cb-version"] = config.cb_version;
+        } else if (config.cb_use_v2) {
+            // @deprecated: Use cb_version instead
+            config.headers["x-cb-version"] = "2";
+        } else if (config.cb_part) {
             config.headers["x-cb-part"] = config.cb_part;
             config.headers["x-cb-version"] = "2";
+        } else {
+            config.headers["x-cb-version"] = "1";
         }
-        if (config.cb_use_v2){
-            config.headers["x-cb-version"] = "2";
-        }
-        config.url = getApiHost(config.cb_apihost) + u.path;
+        config.url = getApiHost(config.cb_apihost) + u.pathname + u.search;
         return config;
     }, error => {
         return Promise.reject(error);
