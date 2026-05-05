@@ -168,19 +168,22 @@ try {
 
 ### 查询余额
 
-使用`getBalance`方法可以查询当前账户余额。
+使用 `getBalance` 调用控制台接口 `POST https://console.cloudbypass.com/api/v1/balance`，请求体为 JSON。第三参数为 `{ type }`，可使用导出常量 `BALANCE_TYPE_POINTS`（默认，积分）、`BALANCE_TYPE_RES`（住宅流量）、`BALANCE_TYPE_DAT`（机房流量）；住宅/机房返回 `{ total, balance }`（字节），积分返回 `{ balance }`。
 
 ```js
-import cloudbypass from 'cloudbypass-sdk';
-// Using Node.js `require()`
-// const cloudbypass = require('cloudbypass-sdk');
+import cloudbypass, {
+    BALANCE_TYPE_DAT,
+    BALANCE_TYPE_POINTS,
+    BALANCE_TYPE_RES,
+} from 'cloudbypass-sdk';
 
-cloudbypass.getBalance("/* APIKEY */", "/* EMAIL */").then(balance => {
-    console.log(balance);
-}).catch(err => {
-    console.log(err);
-})
+cloudbypass.getBalance('/* APIKEY */', '/* EMAIL */').then((data) => console.log(data));
+cloudbypass.getBalance('/* APIKEY */', '/* EMAIL */', { type: BALANCE_TYPE_RES }).then((data) => {
+    console.log(data.total, data.balance);
+});
 ```
+
+`convertBytes` 可将字节数格式化为可读字符串。例如 `convertBytes(data.balance)`。
 
 ### 提取代理
 

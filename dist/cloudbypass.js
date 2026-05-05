@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.4 Copyright (c) 2026 NULL and contributors
+// Cloudbypass v0.1.5 Copyright (c) 2026 NULL and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('punycode'), require('util')) :
   typeof define === 'function' && define.amd ? define(['punycode', 'util'], factory) :
@@ -17225,6 +17225,11 @@
   }
   var CookieJar_1 = CookieJar;
 
+  /** POST /api/v1/balance JSON body field "type" */
+  var BALANCE_TYPE_POINTS = "points";
+  var BALANCE_TYPE_RES = "res";
+  var BALANCE_TYPE_DAT = "dat";
+
   var getEnv = function getEnv(key, defaultValue) {
     try {
       if (process.env[key]) {
@@ -17277,6 +17282,38 @@
   var isObject = function isObject(thing) {
     return thing !== null && _typeof(thing) === 'object';
   };
+  var UNITS = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+
+  /**
+   * Format byte count as a human-readable string (1024-based).
+   * @param {number} value
+   * @param {string} [endUnit="Y"]
+   * @returns {string}
+   */
+  var convertBytes = function convertBytes(value) {
+    var endUnit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "Y";
+    if (!value) {
+      return "0";
+    }
+    var eu = endUnit;
+    if (eu.length === 1) {
+      eu = eu.toUpperCase();
+    }
+    var endIdx = UNITS.indexOf(eu);
+    if (endIdx === -1) {
+      throw new Error("Invalid endUnit: ".concat(endUnit));
+    }
+    var unit = 0;
+    var v = Number(value);
+    while (v >= 1024) {
+      v /= 1024;
+      unit += 1;
+      if (unit === endIdx) {
+        break;
+      }
+    }
+    return "".concat(v.toFixed(2), " ").concat(UNITS[unit], "B");
+  };
 
   function BypassError(axiosError) {
     var request = axiosError.request,
@@ -17312,21 +17349,56 @@
     return isObject(payload) && payload.isBypassError === true;
   }
 
+  var BALANCE_URL = "https://console.cloudbypass.com/api/v1/balance";
+
+  /**
+   * @param {string} [apikey]
+   * @param {string} [email]
+   * @param {{ type?: string }} [options]
+   * @returns {Promise<Record<string, number>>}
+   */
   var getBalance = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(apikey, email) {
+      var _options$type;
+      var options,
+        type,
+        res,
+        _ref2,
+        _res$data$detail,
+        _res$data,
+        _res$data2,
+        detail,
+        err,
+        _args = arguments;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            return _context.abrupt("return", axios$1.get('https://console.cloudbypass.com/api/v1/balance', {
-              params: {
-                apikey: getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "") || apikey,
-                email: email
+            options = _args.length > 2 && _args[2] !== undefined ? _args[2] : {};
+            type = (_options$type = options.type) !== null && _options$type !== void 0 ? _options$type : BALANCE_TYPE_POINTS;
+            _context.next = 4;
+            return axios$1.post(BALANCE_URL, {
+              apikey: getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "") || apikey,
+              email: email,
+              type: type
+            }, {
+              validateStatus: function validateStatus() {
+                return true;
               }
-            }).then(function (res) {
-              var _res$data;
-              return (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.balance;
-            }));
-          case 1:
+            });
+          case 4:
+            res = _context.sent;
+            if (!(res.status !== 200)) {
+              _context.next = 11;
+              break;
+            }
+            detail = (_ref2 = (_res$data$detail = (_res$data = res.data) === null || _res$data === void 0 ? void 0 : _res$data.detail) !== null && _res$data$detail !== void 0 ? _res$data$detail : (_res$data2 = res.data) === null || _res$data2 === void 0 ? void 0 : _res$data2.message) !== null && _ref2 !== void 0 ? _ref2 : "Balance API error";
+            err = new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+            err.response = res;
+            err.data = res.data;
+            throw err;
+          case 11:
+            return _context.abrupt("return", res.data);
+          case 12:
           case "end":
             return _context.stop();
         }
@@ -17600,6 +17672,10 @@
   });
   cloudbypass.isBypassError = isBypassError;
   cloudbypass.getBalance = getBalance;
+  cloudbypass.convertBytes = convertBytes;
+  cloudbypass.BALANCE_TYPE_POINTS = BALANCE_TYPE_POINTS;
+  cloudbypass.BALANCE_TYPE_RES = BALANCE_TYPE_RES;
+  cloudbypass.BALANCE_TYPE_DAT = BALANCE_TYPE_DAT;
   cloudbypass.BypassError = BypassError;
   cloudbypass.createProxy = function (auth) {
     return new CloudbypassProxy(auth);

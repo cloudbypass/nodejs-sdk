@@ -1,43 +1,37 @@
-import cloudbypass, {isBypassError} from "./index.js";
+import cloudbypass, {
+    BALANCE_TYPE_DAT,
+    BALANCE_TYPE_POINTS,
+    BALANCE_TYPE_RES,
+    convertBytes,
+} from "./index.js";
 
+const APIKEY = "";
+const EMAIL = "";
 
-/*try {
-    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
-        cb_use_v2: true
-    }));
-    console.log(resp.headers['set-cookie']);
-    console.log(resp.data);
+function demoConvertOnly() {
+    console.log(convertBytes(1536));
+    console.log(convertBytes(1024 ** 3));
+    console.log(convertBytes(1024 ** 4 * 2, "G"));
+}
+
+async function demoBalance() {
+    console.log("points (default):", await cloudbypass.getBalance(APIKEY, EMAIL));
+    console.log("points:", await cloudbypass.getBalance(APIKEY, EMAIL, { type: BALANCE_TYPE_POINTS }));
+
+    const res = await cloudbypass.getBalance(APIKEY, EMAIL, { type: BALANCE_TYPE_RES });
+    const dat = await cloudbypass.getBalance(APIKEY, EMAIL, { type: BALANCE_TYPE_DAT });
+    console.log("res:", res);
+    console.log("dat:", dat);
+
+    console.log("res total:", convertBytes(res.total));
+    console.log("res balance:", convertBytes(res.balance, "G"));
+    console.log("dat total:", convertBytes(dat.total, "G"));
+}
+
+demoConvertOnly();
+
+try {
+    await demoBalance();
 } catch (e) {
-    if (isBypassError(e)) {
-        console.log(e.response.data || e.response || e.message);
-    } else {
-        console.log(e);
-    }
-}*/
-
-console.log(await cloudbypass.getBalance("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "example@cloudbypass.cn"))
-
-// const proxy = cloudbypass.createProxy("username-res:password");
-//
-// // 提取动态代理
-// console.log("Extract dynamic proxy: ")
-// console.log(proxy.setDynamic().toString())
-// console.log(proxy.setRegion("US").toString())
-//
-// // 提取时效代理并指定地区
-// console.log("Extract proxy with expire and region: ")
-// console.log(proxy.copy().setExpire(60 * 30).setRegion("US").toString())
-//
-// // 批量提取
-// console.log("Extract five 10-minute aging proxies: ")
-// const pool = proxy.copy().setExpire(60 * 10).limit(5);
-// for (let p of pool) {
-//     console.log(p)
-// }
-//
-// // 循环提取
-// console.log("Loop two 10-minute aging proxies: ")
-// const loop = proxy.copy().setExpire(60 * 10).loop(2, 'username:password:gateway');
-// for (let i = 0; i < 10; i++) {
-//     console.log(loop.next().value)
-// }
+    console.error("getBalance:", e.message ?? e);
+}

@@ -1,4 +1,4 @@
-// Cloudbypass v0.1.4 Copyright (c) 2026 NULL and contributors
+// Cloudbypass v0.1.5 Copyright (c) 2026 NULL and contributors
 import Punycode from 'punycode';
 import require$$0$1 from 'util';
 
@@ -16933,6 +16933,11 @@ function syncWrap(method) {
 }
 var CookieJar_1 = CookieJar;
 
+/** POST /api/v1/balance JSON body field "type" */
+const BALANCE_TYPE_POINTS = "points";
+const BALANCE_TYPE_RES = "res";
+const BALANCE_TYPE_DAT = "dat";
+
 const getEnv = (key, defaultValue) => {
     try {
         if (process.env[key]) {
@@ -16993,6 +16998,38 @@ const inherits = (constructor, superConstructor, props, descriptors) => {
 
 const isObject = (thing) => thing !== null && typeof thing === 'object';
 
+const UNITS = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+
+/**
+ * Format byte count as a human-readable string (1024-based).
+ * @param {number} value
+ * @param {string} [endUnit="Y"]
+ * @returns {string}
+ */
+const convertBytes = (value, endUnit = "Y") => {
+    if (!value) {
+        return "0";
+    }
+    let eu = endUnit;
+    if (eu.length === 1) {
+        eu = eu.toUpperCase();
+    }
+    const endIdx = UNITS.indexOf(eu);
+    if (endIdx === -1) {
+        throw new Error(`Invalid endUnit: ${endUnit}`);
+    }
+    let unit = 0;
+    let v = Number(value);
+    while (v >= 1024) {
+        v /= 1024;
+        unit += 1;
+        if (unit === endIdx) {
+            break;
+        }
+    }
+    return `${v.toFixed(2)} ${UNITS[unit]}B`;
+};
+
 function BypassError(axiosError) {
     const {request, response} = axiosError;
     const {id, code, message} = response.data;
@@ -17022,16 +17059,33 @@ function isBypassError$1(payload) {
     return isObject(payload) && (payload.isBypassError === true);
 }
 
-const getBalance$1 = async (apikey, email) => {
-    return axios$1.get('https://console.cloudbypass.com/api/v1/balance', {
-        params: {
+const BALANCE_URL = "https://console.cloudbypass.com/api/v1/balance";
+
+/**
+ * @param {string} [apikey]
+ * @param {string} [email]
+ * @param {{ type?: string }} [options]
+ * @returns {Promise<Record<string, number>>}
+ */
+const getBalance$1 = async (apikey, email, options = {}) => {
+    const type = options.type ?? BALANCE_TYPE_POINTS;
+    const res = await axios$1.post(
+        BALANCE_URL,
+        {
             apikey: getEnv("CLOUDBYPASS_APIKEY", "") || getEnv("CB_APIKEY", "") || apikey,
-            email
-        }
-    })
-        .then(res => {
-            return res.data?.balance;
-        })
+            email,
+            type,
+        },
+        {validateStatus: () => true},
+    );
+    if (res.status !== 200) {
+        const detail = res.data?.detail ?? res.data?.message ?? "Balance API error";
+        const err = new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+        err.response = res;
+        err.data = res.data;
+        throw err;
+    }
+    return res.data;
 };
 
 class CloudbypassProxy {
@@ -17243,6 +17297,10 @@ cloudbypassInterceptorHelper(cloudbypass);
 
 cloudbypass.isBypassError = isBypassError$1;
 cloudbypass.getBalance = getBalance$1;
+cloudbypass.convertBytes = convertBytes;
+cloudbypass.BALANCE_TYPE_POINTS = BALANCE_TYPE_POINTS;
+cloudbypass.BALANCE_TYPE_RES = BALANCE_TYPE_RES;
+cloudbypass.BALANCE_TYPE_DAT = BALANCE_TYPE_DAT;
 cloudbypass.BypassError = BypassError;
 cloudbypass.createProxy = function (auth) {
     return new CloudbypassProxy(auth);
@@ -17253,8 +17311,8 @@ cloudbypass.default = cloudbypass;
 const {
     getBalance,
     isBypassError,
-    create
+    create,
 } = cloudbypass;
 
-export { create, cloudbypass as default, getBalance, isBypassError };
+export { BALANCE_TYPE_DAT, BALANCE_TYPE_POINTS, BALANCE_TYPE_RES, convertBytes, create, cloudbypass as default, getBalance, isBypassError };
 //# sourceMappingURL=cloudbypass.js.map

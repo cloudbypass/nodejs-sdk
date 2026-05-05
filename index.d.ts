@@ -6,6 +6,22 @@ import axios, {
 } from "axios";
 import type {CookieJar} from 'tough-cookie';
 
+export const BALANCE_TYPE_POINTS: "points";
+export const BALANCE_TYPE_RES: "res";
+export const BALANCE_TYPE_DAT: "dat";
+
+export interface BalanceResponsePoints {
+    balance: number;
+}
+
+export interface BalanceResponseTraffic {
+    total: number;
+    balance: number;
+}
+
+export type BalanceResponse = BalanceResponsePoints | BalanceResponseTraffic;
+
+export function convertBytes(value: number, endUnit?: string): string;
 
 export interface CloudbypassRequestConfig<D = any> extends AxiosRequestConfig {
     cb_apikey?: string;
@@ -94,7 +110,13 @@ export class Cloudbypass {
 
     patch<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: CloudbypassRequestConfig<D>): Promise<R>;
 
-    getBalance(apikey: string, email: string): Promise<number>;
+    getBalance(apikey: string, email: string, options?: { type?: string }): Promise<BalanceResponse>;
+
+    convertBytes(value: number, endUnit?: string): string;
+
+    BALANCE_TYPE_POINTS: typeof BALANCE_TYPE_POINTS;
+    BALANCE_TYPE_RES: typeof BALANCE_TYPE_RES;
+    BALANCE_TYPE_DAT: typeof BALANCE_TYPE_DAT;
 }
 
 export class BypassError<T = unknown, D = any> extends Error {
@@ -138,6 +160,8 @@ export interface CloudbypassInstance extends Cloudbypass {
 }
 
 export function isBypassError<T = any, D = any>(payload: any): payload is BypassError<T, D>;
+
+export function getBalance(apikey: string, email: string, options?: { type?: string }): Promise<BalanceResponse>;
 
 export interface CloudbypassStatic extends CloudbypassInstance {
     isBypassError: typeof isBypassError;
